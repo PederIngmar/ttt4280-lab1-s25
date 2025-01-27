@@ -48,6 +48,7 @@ def sample_adc(file_name):
     try:
         stdin, stdout, stderr = client.exec_command(command)
         print(stdout.read().decode('utf-8'))
+        
     except Exception as e:
         print(f"Error: {e}")
         
@@ -55,15 +56,17 @@ def sample_adc(file_name):
         client.close()
 
 
-
-def sampel_data(channels=5):
+def sampel_data():
     timestamp = datetime.now().strftime('d-%H.%M.%S')
     file_name = f"{timestamp}.bin"
-
+    file_name = "latest.bin"
     sample_adc(file_name)
     download_file(file_name)
+    return file_name
 
-    path = f"output/{file_name}"
+def read_data(file_name, channels=5):
+    path = f"output/{file_name}.bin"
+
     with open(path, 'r') as fid:
         sample_period = np.fromfile(fid, count=1, dtype=float)[0]
         data = np.fromfile(fid, dtype='uint16').astype('float64')
@@ -75,7 +78,6 @@ def sampel_data(channels=5):
     sample_period *= 1e-6
     return sample_period, data
 
-
 def plot(data):
     """
     Plot data from `raspi_import` in a 5x1 grid.
@@ -84,13 +86,15 @@ def plot(data):
     
     for i, ax in enumerate(axs):
         ax.plot(data[:, i])
-        ax.set_ylabel(f'Ch {i}')
+        ax.set_ylabel(f'adc {i}')
     axs[-1].set_xlabel('Sample')
+    fig.suptitle('Sampled signal through 5 ADCs')
+    axs[-1].set_xlabel('Tid')
+    plt.xlim(0, 10000)
     plt.savefig('plot.png')
 
-
-
-# Import data from bin file
 if __name__ == "__main__":
-    sample_period, data = sampel_data()
+    #file_name = sampel_data()
+    file_name = "latest"
+    sample_period, data = read_data(file_name)
     plot(data)
