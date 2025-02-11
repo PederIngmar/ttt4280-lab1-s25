@@ -1,0 +1,42 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="800" height="469" viewBox="-0.5 -0.5 800 469" content="&lt;mxfile scale=&quot;2.5&quot; border=&quot;0&quot;&gt;&lt;diagram id=&quot;MM1MQ7lEkRevW3HVAEAJ&quot; name=&quot;Page-1&quot;&gt;7VjbctowEP0aP5IxNsbOY4DQdiaZMiGdNo8CL0aJsKgQt3x9dbMt2dBCbg9tzQzDHkkraffoLLIX9he7Twwt57c0BeIFfrrzwoEXBN1OLL4lsNdA0A00kDGcasivgDF+Bg22C3SNU1gZTEOcUsLx0gWnNM9hyh0MMUa3brcZJakDLFEGzjIkMJ4iAo1u33HK5xpNIqv3Z8DZvJi57ZuWCZo+ZYyuczOfF4Qz9ejmBSp8mf6rOUrp1po0vPbCPqOU61+LXR+IDK0btuGR1nLdDHJ+yoDYJGqDyBqKJauF8X0RDEhFbIwJZEK31xXQU3sF6c0X1oojxq9kAgQwIXT6dD/HuWiAPD0Mc7b/IcB2YTxITxdRYQ52xrO29uU8jD5BnxLKBJLCDK0J19MMsdigdqhWY9tztJSbmBHYmdX0Vks0xXl2T5eFaw0YqxlPE+IVXbOpCVCcGIoiloHplpg4yuDV0ytODdAFiA2JDgwI4njjEg8Z/mZlvyqH4odJozK/rYB9nTzKUxD4BE2A6KF3oy9mVQzgThHKmqDMf2KtynDDSj0iOBN5GkzF9kGEuiedDcVp0hFqG+SWbiogB5sgAy8WQez+XFOVn7KhhLzwymp36VV1CvqVYZHssJec5sfGljw8aWQ8EN8zQaCCaeI4g3oaHBQtw6EvnldwagOMw+63bClao644I2qQUdiOtraVWrUDQ8u5pVTd5GyCCdPi2BEZufyzjLhKQRmf04zmiNxQFSdJnUfgfG+qAVpzWlcUlZ6jYqKP5AgYFlsCNi6DnkiaqrN5pNFWuGphtsyVQmVp04OtW0eECnaYW8OE9WC1VIOkUYlbJVt+U9TeScQSvylihbC9u4g1CFWsxiLU1aDfErUd7RvMaqiUPEhYVPMr07DAaarS+A/KV0OmwtDIVE3YZpH8SJzm3Okvn4+RtW7XEbV24cKWNf/ygKxFb1Y3R/0Tyqau7v/L5luUTfkMhx/Cr8BlV7dBriRucqvTeZeSmYR/eck8v4y99DZQo1oaQZJ2DlEtCSahkJiXU835h++/dXE0Q0cU57wibdiOXdpGNUKaJOpR9l2v7sgV1zh03Zh0190oape7Oa14dxrUHgtBROTg1fJGa2/v9CrOYIWf0UQ5kelayjWrXUQ9LxrUSlh1O1Qq3ytv6EUHc0TO5kR5guv6U76XMGv0zC38qC61/IswiNw/9C3j/ZXsabma1ypUpvBAZ7MVnJlwYVZvKHT36i1QeP0L&lt;/diagram&gt;&lt;/mxfile&gt;" style="background-color: rgb(255, 255, 255);">
+    <defs>
+        <filter id="dropShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="1.7" result="blur"/>
+            <feOffset in="blur" dx="3" dy="3" result="offsetBlur"/>
+            <feFlood flood-color="#3D4574" flood-opacity="0.4" result="offsetColor"/>
+            <feComposite in="offsetColor" in2="offsetBlur" operator="in" result="offsetBlur"/>
+            <feBlend in="SourceGraphic" in2="offsetBlur"/>
+        </filter>
+    </defs>
+    <g filter="url(#dropShadow)">
+        <path d="M 337.5 72.5 L 337.5 46.25 L 385 85 L 337.5 123.75 L 337.5 97.5 L 301.5 97.5 L 266.25 97.5 L 266.25 123.75 L 218.75 85 L 266.25 46.25 L 266.25 72.5 L 301.5 72.5 Z" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2.5" stroke-miterlimit="1.42" pointer-events="all"/>
+        <path d="M 337.5 72.5 L 337.5 46.25 L 385 85 L 337.5 123.75 L 337.5 97.5" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2.5" stroke-miterlimit="4" pointer-events="all"/>
+        <path d="M 266.25 97.5 L 266.25 123.75 L 218.75 85 L 266.25 46.25 L 266.25 72.5" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2.5" stroke-miterlimit="4" pointer-events="all"/>
+        <rect x="386.25" y="0" width="320" height="170" fill="#eeeeee" stroke="#ff0000" stroke-width="2.5" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="30px">
+            <text x="545.75" y="97">
+                RPI
+            </text>
+        </g>
+        <path d="M 558.75 291.25 L 533.75 291.25 L 533.75 218.75 L 507.5 218.75 L 546.25 171.25 L 585 218.75 L 558.75 218.75 Z" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2.5" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="410" y="292.5" width="272.5" height="162.5" fill="#f5f5f5" stroke="#330000" stroke-width="2.5" pointer-events="all"/>
+        <g fill="#333333" font-family="Helvetica" text-anchor="middle" font-size="30px">
+            <text x="545.75" y="385.75">
+                ADC-array
+            </text>
+        </g>
+        <rect x="0" y="30" width="217.5" height="110" fill="#eeeeee" stroke="#3333ff" stroke-width="2.5" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="30px">
+            <text x="108.25" y="97">
+                PC
+            </text>
+        </g>
+        <path d="M 786.25 362.5 L 786.25 387.5 L 734.85 387.5 L 730.94 387.41 L 730.31 413.65 L 683.75 373.78 L 732.16 336.17 L 731.53 362.41 L 735.15 362.5 Z" fill="#d5e8d4" stroke="#82b366" stroke-width="2.5" stroke-miterlimit="1.42" pointer-events="all"/>
+        <path d="M 730.94 387.41 L 730.31 413.65 L 683.75 373.78 L 732.16 336.17 L 731.53 362.41" fill="none" stroke="#82b366" stroke-width="2.5" stroke-miterlimit="4" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="27.5px">
+            <text x="746.5" y="323.75">
+                Signal
+            </text>
+        </g>
+    </g>
+</svg>
