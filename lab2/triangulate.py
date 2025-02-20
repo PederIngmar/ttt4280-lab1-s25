@@ -4,8 +4,8 @@ import os
 angle = ""
 
 
-def raspi_import(file_name, channels=5):
-    path = f"/output/{file_name}.bin"
+def raspi_import(path, file_name, channels=5):
+    path = f"{path}/{file_name}.bin"
 
     with open(path, 'r') as fid:
         sample_period = np.fromfile(fid, count=1, dtype=float)[0]
@@ -17,22 +17,27 @@ def raspi_import(file_name, channels=5):
     # sample period is given in microseconds-changes units to seconds
     sample_period *= 1e-6
     return sample_period, data
+  
 
-
-def average_signals(folder_name):
-    all_data = []
-    for file_name in os.listdir(folder_name):
-        if file_name.endswith('.bin'):
-            sample_period, data = raspi_import(os.path.join(folder_name, file_name))
-            all_data.append(data)
-    
-    if all_data:
-        avg_data = np.mean(all_data, axis=0)
-        return avg_data
-    else:
+def delays(sample_period, data):
+    if data is None:
         return None
 
+    D = {}
+    channel_pairs = [(0, 1), (1, 2), (0, 2)]
+    sampling_f = 1 / sample_period
+    for cpair in channel_pairs:
+        crosscorrelation = np.abs(np.correlate(data[:, cpair[0]], data[:, cpair[1]], mode='full'))
+        lags = np.arange(-len(data)+1, len(data))
+        max_lag = lags[np.argmax(crosscorrelation)]
+        delta_t = max_lag / sampling_f
+        D[cpair] = delta_t
+
+    return D
+
 if __name__ == "__main__":
-    folder_name = "output"
-    avg_data = average_signals()
+    path = "output/0"
+    file_name = "d-19.06.35"
+    sample_period, data = raspi_import(path, file_name)
+    delays(sample_period, data)
   
