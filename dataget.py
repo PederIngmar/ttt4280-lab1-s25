@@ -3,14 +3,17 @@ import matplotlib.pyplot as plt
 import paramiko
 import os
 from datetime import datetime
+from scipy.signal import detrend
 
 hostname = 'ubuntupi.local'
 username = 'peder'
 password = 'kristian'
+lab = "lab2"
+angle = ""
 
 def download_file(file_name):
-    remote_file = f"lab1/{file_name}"
-    local_file = f"output/{file_name}"
+    remote_file = f"lab1/{file_name}.bin"
+    local_file = f"{lab}/output/{file_name}.bin"
     try:
         local_output_dir = os.path.dirname(local_file)
         if local_output_dir and not os.path.exists(local_output_dir):
@@ -28,7 +31,7 @@ def download_file(file_name):
 
 def sample_adc(file_name):
     samples = 31250
-    command = f'sudo ./lab1/adc_sampler {samples} ./lab1/{file_name}'
+    command = f'sudo ./lab1/adc_sampler {samples} ./lab1/{file_name}.bin'
 
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -46,14 +49,13 @@ def sample_adc(file_name):
 
 def sampel_data():
     timestamp = datetime.now().strftime('d-%H.%M.%S')
-    file_name = f"{timestamp}.bin"
-    file_name = "latest.bin"
+    file_name = f"{timestamp}"
     sample_adc(file_name)
     download_file(file_name)
     return file_name
 
 def raspi_import(file_name, channels=5):
-    path = f"output/{file_name}.bin"
+    path = f"{lab}/output/{file_name}.bin"
 
     with open(path, 'r') as fid:
         sample_period = np.fromfile(fid, count=1, dtype=float)[0]
@@ -66,23 +68,33 @@ def raspi_import(file_name, channels=5):
     sample_period *= 1e-6
     return sample_period, data
 
-def plot(data):
+def plot(file_name, data):
     """
     Plot data from `raspi_import` in a 5x1 grid.
     """
     fig, axs = plt.subplots(5, 1, sharex=True, figsize=(10, 8))
     
+    total_samples = data.shape[0]
+    time_axis = np.linspace(0, 1, total_samples)
+
     for i, ax in enumerate(axs):
-        ax.plot(data[:, i])
-        ax.set_ylabel(f'adc {i}')
-    axs[-1].set_xlabel('Sample')
+        detrended_data = detrend(data[:, i])
+        ax.plot(time_axis[250:], detrended_data[250:])
+        ax.set_ylabel(f'adc {i+1}')
+        ax.set_xlim(0, 0.1)  # Set xlim to zoom in
+
+    axs[-1].set_xlabel('Time (s)')
     fig.suptitle('Sampled signal through 5 ADCs')
-    axs[-1].set_xlabel('Tid')
-    plt.xlim(0, 10000)
-    plt.savefig('plot.png')
+
+    output_dir = f'{lab}plots'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    plt.savefig(os.path.join(output_dir, f'{file_name}.png'))
+    plt.show()
+
 
 if __name__ == "__main__":
     file_name = sampel_data()
-    #file_name = "latest"
+    print(file_name)
     sample_period, data = raspi_import(file_name)
-    plot(data)
+    plot(file_name, data)
