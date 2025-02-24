@@ -1,7 +1,7 @@
 import numpy as np 
 import os
 import glob
-
+from scipy.signal import detrend
 
 def raspi_import(path, file_name, channels=5):
     path = f"{path}/{file_name}.bin"
@@ -12,7 +12,7 @@ def raspi_import(path, file_name, channels=5):
         # The "dangling" `.astype('float64')` casts data to double precision
         # Stops noisy autocorrelation due to overflow
         data = data.reshape((-1, channels))
-
+    
     # sample period is given in microseconds-changes units to seconds
     sample_period *= 1e-6
     return sample_period, data
@@ -21,12 +21,14 @@ def raspi_import(path, file_name, channels=5):
 def delays(sample_period, data):
     if data is None:
         return None
-
+    data = data[:, 2:]
     D = {}
     channel_pairs = [(0, 1), (1, 2), (0, 2)]
     sampling_f = 1 / sample_period
     for cpair in channel_pairs:
-        crosscorrelation = np.abs(np.correlate(data[:, cpair[0]], data[:, cpair[1]], mode='full'))
+        d1 = detrend(data[:, cpair[0]])
+        d2 = detrend(data[:, cpair[1]])
+        crosscorrelation = np.abs(np.correlate(d1, d2, mode='full'))
         lags = np.arange(-len(data)+1, len(data))
         max_lag = lags[np.argmax(crosscorrelation)]
         delta_t = max_lag / sampling_f
@@ -47,12 +49,14 @@ def all_delays(angle):
         all_delays.append(d)
     return all_delays
 
-def delay_calculations(all_delays):
-    # Calculate average delays
+def average_delays(all_delays):
     avg_delays = {}
     for cpair in all_delays[0].keys():
         avg_delays[cpair] = np.mean([d[cpair] for d in all_delays])
+    return avg_delays
 
+
+def std_delays(all_delays):
     # Calculate variance of delays
     var_delays = {}
     for cpair in all_delays[0].keys():
@@ -63,13 +67,14 @@ def delay_calculations(all_delays):
     for cpair in all_delays[0].keys():
         std_delays[cpair] = np.std([d[cpair] for d in all_delays])
 
-    return avg_delays, std_delays
+    return std_delays
 
 
-def estimate_angle(all_delays):
+def estimate_angle(avg_delays):
     d = 6 #cm
-    delays = all_delays
-    placements = [[], [], []]
+    h = np.sin(np.pi/3) * d
+    delays = avg_delays.values
+    placements = [[d/2, 0], [d/2, 0], [0, h]]
 
 
 if __name__ == "__main__":
@@ -77,6 +82,10 @@ if __name__ == "__main__":
     file_name = "d-19.47.30"
     
     angles = [0, 36, 72, 108, 144, 180]
-    for angle in angles:
-        ad = all_delays(angle)
-        avg, std = delay_calculations(ad)
+    #for angle in angles:
+    all_d = all_delays(angles[0])
+    for d in all_d:
+        print(d)
+      #  avg_d = average_delays(all_d)
+
+        #avg, std = delay_calculations(ad)
