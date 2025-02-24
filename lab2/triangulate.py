@@ -70,10 +70,10 @@ def std_delays(all_delays):
     return std_delays
 
 
-def estimate_angle(avg_delays):
-    t12 = avg_delays[(0, 1)]
-    t13 = avg_delays[(0, 2)]
-    t23 = avg_delays[(1, 2)]
+def estimate_angle(delays):
+    t12 = delays[(0, 1)]
+    t13 = delays[(0, 2)]
+    t23 = delays[(1, 2)]
     x = (t23 - t12 + 2*t13)
     y = (t23 + t12)
     if x < 0:
@@ -81,16 +81,19 @@ def estimate_angle(avg_delays):
     else:
         theta = -np.arctan(np.sqrt(3)* y/x)
 
-    theta_deg = np.degrees(theta)
-    print(f"Estimated angle: {theta_deg+43.37:.2f} degrees")
+    cali_factor = 43.37
+    theta_deg = np.degrees(theta) + cali_factor
+
+    print(f"Estimated angle: {theta_deg:.2f} degrees")
+    return theta_deg
 
 if __name__ == "__main__":
-    path = "output/0"
-    file_name = "d-19.47.30"
-    
     angles = [0, 36, 72, 108, 144, 180]
     for angle in angles:
-        all_d = all_delays(angle)
-        avg_d = average_delays(all_d)
+        bin_files = glob.glob(f"output/{angle}/*.bin")
+        first_bin_file = bin_files[0]
+        file_name = os.path.splitext(os.path.basename(first_bin_file))[0]
+        sample_period, data = raspi_import(f"output/{angle}", file_name)
+        d = delays(sample_period, data)
         print(angle)
-        estimate_angle(avg_d)
+        estimate_angle(d)
