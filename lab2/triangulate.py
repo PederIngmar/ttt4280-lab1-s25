@@ -71,21 +71,26 @@ def std_delays(all_delays):
 
 
 def estimate_angle(avg_delays):
-    d = 6 #cm
-    h = np.sin(np.pi/3) * d
-    delays = avg_delays.values
-    placements = [[d/2, 0], [d/2, 0], [0, h]]
+    t12 = avg_delays[(0, 1)]
+    t13 = avg_delays[(0, 2)]
+    t23 = avg_delays[(1, 2)]
+    x = (t23 - t12 + 2*t13)
+    y = (t23 + t12)
+    if x < 0:
+        theta = np.pi - np.arctan(np.sqrt(3)* y/x)
+    else:
+        theta = -np.arctan(np.sqrt(3)* y/x)
 
+    theta_deg = np.degrees(theta)
+    print(f"Estimated angle: {theta_deg+43.37:.2f} degrees")
 
 if __name__ == "__main__":
     path = "output/0"
     file_name = "d-19.47.30"
     
     angles = [0, 36, 72, 108, 144, 180]
-    #for angle in angles:
-    all_d = all_delays(angles[0])
-    for d in all_d:
-        print(d)
-      #  avg_d = average_delays(all_d)
-
-        #avg, std = delay_calculations(ad)
+    for angle in angles:
+        all_d = all_delays(angle)
+        avg_d = average_delays(all_d)
+        print(angle)
+        estimate_angle(avg_d)
