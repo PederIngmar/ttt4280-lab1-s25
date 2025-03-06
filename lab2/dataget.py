@@ -8,12 +8,11 @@ from scipy.signal import detrend
 hostname = 'ubuntupi.local'
 username = 'peder'
 password = 'kristian'
-lab = "lab2"
 angle = "144"
 
 def download_file(file_name):
     remote_file = f"lab1/{file_name}.bin"
-    local_dir = f"{lab}/output/{angle}"
+    local_dir = f"output/{angle}"
     local_file = f"{local_dir}/{file_name}.bin"
     
     if not os.path.exists(local_dir):
@@ -60,7 +59,7 @@ def sampel_data():
     return file_name
 
 def raspi_import(file_name, channels=5):
-    dir = f"{lab}/output/{angle}"
+    dir = f"output/{angle}"
 
     if not os.path.exists(dir):
         os.makedirs(dir)
@@ -96,7 +95,7 @@ def plot(file_name, data):
     axs[-1].set_xlabel('Time (s)')
     fig.suptitle('Sampled signal through 5 ADCs')
 
-    output_dir = f'{lab}/plots/{angle}'
+    output_dir = f'plots/{angle}'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     plt.savefig(os.path.join(output_dir, f'{file_name}.png'))

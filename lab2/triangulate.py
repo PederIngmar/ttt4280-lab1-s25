@@ -92,11 +92,14 @@ def estimate_angle(delays):
     y = (t23 + t12)
 
     if x < 0:
-        theta = np.pi - np.arctan(np.sqrt(3)* y/x)
+        print("x<0")
+        theta = - np.arctan2(np.sqrt(3)* y, x)
     elif x == 0:
+        print("x = 0")
         theta = -np.pi/2
     else:
-        theta = -np.arctan(np.sqrt(3)* y/x)
+        print("x >>>> 0")
+        theta = -np.arctan2(np.sqrt(3)* y, x)
 
     cali_factor = 43.37
     theta_deg = np.degrees(theta) + cali_factor
@@ -109,6 +112,7 @@ def compute_statistics():
     estimated_angles = []
     print("Statistics for all angles:")
     for angle in angles:
+        print(f"------- angle:{angle}-------")
         bin_files = glob.glob(f"output/{angle}/*.bin")
         for i in range(0, len(bin_files)):
             current_bin_file = bin_files[i]
