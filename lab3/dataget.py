@@ -27,6 +27,11 @@ def download_file(file_name):
         sftp = paramiko.SFTPClient.from_transport(transport)
         sftp.get(remote_file, local_file)
         print(f"File downloaded successfully to {local_file}")
+        
+        # Delete the remote file
+        sftp.remove(remote_file)
+        print(f"Remote file {remote_file} deleted successfully")
+        
         sftp.close()
         transport.close()
     except Exception as e:
@@ -52,7 +57,7 @@ def rpi_record_video_upgrade(file_name):
 
 def video():
     timestamp = datetime.now().strftime('d-%H.%M.%S')
-    file_name = f"{timestamp}"
+    file_name = "name2" #f"{timestamp}"
     rpi_record_video_upgrade(file_name)
     download_file(file_name)
     return file_name
