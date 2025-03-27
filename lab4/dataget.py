@@ -56,8 +56,61 @@ def sample_adc(file_name):
     finally:
         client.close()
 
+
+def raspi_import(file_name, channels=5):
+    dir = f"output"
+
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
+    path = f"{dir}/{file_name}.bin"
+
+    with open(path, 'r') as fid:
+        sample_period = np.fromfile(fid, count=1, dtype=float)[0]
+        data = np.fromfile(fid, dtype='uint16').astype('float64')
+        # The "dangling" `.astype('float64')` casts data to double precision
+        # Stops noisy autocorrelation due to overflow
+        data = data.reshape((-1, channels))
+
+    # sample period is given in microseconds-changes units to seconds
+    sample_period *= 1e-6
+    return sample_period, data
+
+
+
+def plot(file_name, data):
+    """
+    Plot data from `raspi_import` in a 5x1 grid.
+    """
+    fig, axs = plt.subplots(5, 1, sharex=True, figsize=(10, 8))
+    
+    total_samples = data.shape[0]
+    time_axis = np.linspace(0, 1, total_samples)
+
+    for i, ax in enumerate(axs):
+        detrended_data = detrend(data[:, i])
+        ax.plot(time_axis[250:], detrended_data[250:])
+        ax.set_ylabel(f'adc {i+1}')
+        ax.set_xlim(0, 1)  # Set xlim to zoom in
+
+    axs[-1].set_xlabel('Time (s)')
+    fig.suptitle('Sampled signal through 5 ADCs')
+
+    output_dir = f'plots'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    plt.savefig(os.path.join(output_dir, f'{file_name}.png'))
+    #plt.show()
+
+
+
 if __name__ == "__main__":
     timestamp = datetime.now().strftime('d-%H.%M.%S')
     file_name = f"{timestamp}"
     sample_adc(file_name)
     download_file(file_name)
+
+    sample_period, data = raspi_import(file_name)
+    print(f"Sample period: {sample_period}")
+    print(f"Data shape: {data.shape}")
+    plot(file_name, data)
