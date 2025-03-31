@@ -8,7 +8,7 @@ from scipy.signal import detrend
 hostname = 'ubuntupi.local'
 username = 'peder'
 password = 'kristian'
-angle = "144"
+angle = "0"
 
 def download_file(file_name):
     remote_file = f"lab1/{file_name}.bin"

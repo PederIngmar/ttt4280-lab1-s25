@@ -4,6 +4,7 @@ import paramiko
 import os
 from datetime import datetime
 from scipy.signal import detrend
+import calculations as calc
 
 hostname = 'ubuntupi.local'
 username = 'peder'
@@ -39,7 +40,7 @@ def download_file(file_name):
 
 
 def sample_adc(file_name):
-    samples = 31250*2
+    samples = 31250
     command = f'sudo ./lab4/adc_sampler {samples} ./lab4/{file_name}.bin'
 
     client = paramiko.SSHClient()
@@ -76,32 +77,31 @@ def raspi_import(file_name, channels=5):
     sample_period *= 1e-6
     return sample_period, data
 
-
-
 def plot(file_name, data):
     """
-    Plot data from `raspi_import` in a 5x1 grid.
+    Plot data from `raspi_import` for channels 4 and 5 in the same plot.
     """
-    fig, axs = plt.subplots(5, 1, sharex=True, figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(10, 6))
     
     total_samples = data.shape[0]
     time_axis = np.linspace(0, 1, total_samples)
 
-    for i, ax in enumerate(axs):
+    for i in range(3, 5):  # Channels 4 and 5 (indices 3 and 4)
         detrended_data = detrend(data[:, i])
-        ax.plot(time_axis[250:], detrended_data[250:])
-        ax.set_ylabel(f'adc {i+1}')
-        ax.set_xlim(0, 1)  # Set xlim to zoom in
-
-    axs[-1].set_xlabel('Time (s)')
-    fig.suptitle('Sampled signal through 5 ADCs')
+        ax.plot(time_axis[250:], detrended_data[250:], label=f'adc {i+1}')
+       
+    
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel('ADC Value')
+    ax.set_xlim(0, 1)  # Set xlim to zoom in
+    ax.legend()
+    ax.set_title('Sampled signal through ADCs 4 and 5')
 
     output_dir = f'plots'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     plt.savefig(os.path.join(output_dir, f'{file_name}.png'))
-    #plt.show()
-
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -111,6 +111,24 @@ if __name__ == "__main__":
     download_file(file_name)
 
     sample_period, data = raspi_import(file_name)
+    data = detrend(data, axis=0)
     print(f"Sample period: {sample_period}")
     print(f"Data shape: {data.shape}")
     plot(file_name, data)
+    fft_result, freqs = calc.calculate_doppler(sample_period, data)
+    calc.plot(fft_result)
+    
+    max_index = np.argmax(np.abs(fft_result))
+    max_frequency = freqs[max_index]
+    max_amplitude = np.abs(fft_result[max_index])
+
+    print(f"Max frequency: {max_frequency} Hz")
+    print(f"Max amplitude: {max_amplitude}")
+
+    c = 3e8
+    f_0 = 24.13e9
+
+    doppler_shift = max_frequency
+    v = doppler_shift * c / (2 * f_0)
+
+    print(f"Measured speed: {v} m/s")
