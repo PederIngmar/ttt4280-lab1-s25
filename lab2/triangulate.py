@@ -3,21 +3,6 @@ import os
 import glob
 from scipy.signal import detrend
 
-def raspi_import(path, file_name, channels=5):
-    path = f"{path}/{file_name}.bin"
-
-    with open(path, 'r') as fid:
-        sample_period = np.fromfile(fid, count=1, dtype=float)[0]
-        data = np.fromfile(fid, dtype='uint16').astype('float64')
-        # The "dangling" `.astype('float64')` casts data to double precision
-        # Stops noisy autocorrelation due to overflow
-        data = data.reshape((-1, channels))
-    
-    # sample period is given in microseconds-changes units to seconds
-    sample_period *= 1e-6
-    return sample_period, data
-  
-
 def delays(sample_period, data):
     if data is None:
         return None
@@ -50,14 +35,8 @@ def delays(sample_period, data):
     return D
 
 
-def all_delays(angle):
-    folder_path = f"output/{angle}"
-    bin_files = glob.glob(f"{folder_path}/*.bin")
-    all_delays = []
-
-    for bin_file in bin_files:
-        file_name = os.path.splitext(os.path.basename(bin_file))[0]
-        sample_period, data = raspi_import(folder_path, file_name)
+def all_delays(sample_period, data_list):
+    for data in data_list:
         d = delays(sample_period, data)
         all_delays.append(d)
     return all_delays
@@ -107,6 +86,7 @@ def estimate_angle(delays):
     print(f"Estimated angle: {theta_deg:.2f} degrees")
     return theta_deg
 
+"""
 def compute_statistics():
     angles = [0, 36, 72, 108, 144, 180]
     estimated_angles = []
@@ -124,7 +104,8 @@ def compute_statistics():
         print(f"Standard deviation: {np.std(estimated_angles):.2f}")
         print(f"Variance: {np.var(estimated_angles):.2f}")
         estimated_angles.clear()
-
+"""
+"""
 if __name__ == "__main__":
     angles = [0, 36, 72, 108, 144, 180]
     compute_statistics()
@@ -137,4 +118,5 @@ if __name__ == "__main__":
         d = delays(sample_period, data)
         print(angle)
         estimate_angle(d)
+"""
     
