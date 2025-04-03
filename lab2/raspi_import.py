@@ -41,9 +41,9 @@ def import_latest_file(local_dir):
 
 def import_all_files(local_dir):
     files = [f for f in os.listdir(local_dir) if f.endswith('.bin')]
-    all_data = {}
+    all_data = []
     for file in files:
         file_name = os.path.splitext(file)[0]
-        data = raspi_import(local_dir, file_name)
-        all_data[file_name] = data
+        sample_period, data = raspi_import(local_dir, file_name)
+        all_data.append(data)
     return all_data

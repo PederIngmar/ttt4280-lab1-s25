@@ -20,7 +20,7 @@ def sample_and_download(angle):
     return filename
 
 if __name__ == "__main__":
-    angle = 0
+    angle = 110
     local_dir = f"data/{angle}"
     filename = sample_and_download(angle)
     filename, data = rpi.import_latest_file(local_dir)
