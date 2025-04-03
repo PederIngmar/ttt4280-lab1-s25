@@ -32,18 +32,22 @@ def find_latest_file(local_dir):
     latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(local_dir, f)))
     return os.path.splitext(latest_file)[0]
 
-
 def import_latest_file(local_dir):
     latest_file = find_latest_file(local_dir)
     sample_period, data = raspi_import(local_dir, latest_file)
     data = detrend_all(data)
+    data *= 0.8e-3
     return latest_file, data
 
 def import_all_files(local_dir):
     files = [f for f in os.listdir(local_dir) if f.endswith('.bin')]
+    file_names = []
     all_data = []
     for file in files:
         file_name = os.path.splitext(file)[0]
+        file_names.append(file_name)
         sample_period, data = raspi_import(local_dir, file_name)
+        data = detrend_all(data)
+        data *= 0.8e-3
         all_data.append(data)
-    return all_data
+    return file_names, all_data
