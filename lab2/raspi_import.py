@@ -3,11 +3,7 @@ import numpy as np
 from scipy.signal import detrend
 
 def raspi_import(inputdir, filename, channels=5):
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-
     path = f"{inputdir}/{filename}.bin"
-
     with open(path, 'r') as fid:
         sample_period = np.fromfile(fid, count=1, dtype=float)[0]
         data = np.fromfile(fid, dtype='uint16').astype('float64')
@@ -17,9 +13,7 @@ def raspi_import(inputdir, filename, channels=5):
 
     # sample period is given in microseconds-changes units to seconds
     sample_period *= 1e-6
-    data = detrend_all(data)
     return sample_period, data
-
 
 def detrend_all(data):
     """
@@ -41,7 +35,8 @@ def find_latest_file(local_dir):
 
 def import_latest_file(local_dir):
     latest_file = find_latest_file(local_dir)
-    data = raspi_import(local_dir, latest_file)
+    sample_period, data = raspi_import(local_dir, latest_file)
+    data = detrend_all(data)
     return latest_file, data
 
 def import_all_files(local_dir):

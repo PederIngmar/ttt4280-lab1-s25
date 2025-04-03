@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from scipy.signal import detrend
 
 def plot(outdir, filename, data):
     """

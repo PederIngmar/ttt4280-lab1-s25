@@ -1,6 +1,8 @@
 from datetime import datetime
 import raspi_import as rpi
 import os
+import dataget as dg
+import plot as plot
 
 def sample_and_download(angle):
     """
@@ -8,14 +10,13 @@ def sample_and_download(angle):
     """
     inputdir = f"data/{angle}"
     outdir = f"plots/{angle}"
-    
     os.makedirs(inputdir, exist_ok=True)
     os.makedirs(outdir, exist_ok=True)
 
-    filename = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-    rpi.remote_sample_adc(filename)
-    rpi.download_file(inputdir, inputdir, filename, filename)
+    filename = datetime.now().strftime('d-%H.%M.%S')
+    print(filename)
+    dg.remote_sample_adc(filename)
+    dg.download_file(f"lab1", inputdir, filename, filename)
     return filename
 
 if __name__ == "__main__":
@@ -23,4 +24,5 @@ if __name__ == "__main__":
     local_dir = f"data/{angle}"
     filename = sample_and_download(angle)
     filename, data = rpi.import_latest_file(local_dir)
-    rpi.plot(local_dir, filename, data)
+    plot_dir = f"plots/{angle}"
+    plot.plot(plot_dir, filename, data)
